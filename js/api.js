@@ -3,7 +3,7 @@
    ============================================================ */
 
 // GANTI dengan URL deploy Apps Script kamu (Deploy > Manage deployments)
-const API_URL = 'https://script.google.com/macros/s/AKfycbxGcgrCR6nz1Ne_U-8dlPNpOG-m01CAR5DWU4xxxmdMx0-mQMIgAgjoD4jiK_tTTYgJ/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwHUTNDvrfoERBCC735IuBA1HVh4Yi_4e4cNm3UkGxH1N0eKWGT8uPHxansh4XcbBYS/exec';
 
 const Api = {
   async getAll() {
