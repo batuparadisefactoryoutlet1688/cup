@@ -16,9 +16,17 @@ const Admin = {
   },
 
   initTrigger() {
-    document.getElementById('admin-trigger').addEventListener('click', Admin.openLogin);
+    document.getElementById('admin-trigger').addEventListener('click', Admin.handleTriggerClick);
     const saved = sessionStorage.getItem('tmc_admin_key');
     if (saved) Admin._key = saved;
+  },
+
+  handleTriggerClick() {
+    if (Admin.isLoggedIn()) {
+      if (confirm('Keluar dari mode admin?')) Admin.logout();
+    } else {
+      Admin.openLogin();
+    }
   },
 
   openLogin() {
@@ -44,6 +52,7 @@ const Admin = {
       sessionStorage.setItem('tmc_admin_key', password);
       msgEl.textContent = 'Login berhasil.';
       msgEl.className = 'admin-msg ok';
+      Admin.updateTriggerState();
       setTimeout(Admin.closeLogin, 500);
       // Kalau modal match sedang terbuka, render ulang supaya panel admin muncul.
       if (MatchModal.currentId) MatchModal.open(MatchModal.currentId);
@@ -56,6 +65,11 @@ const Admin = {
   logout() {
     Admin._key = null;
     sessionStorage.removeItem('tmc_admin_key');
+    Admin.updateTriggerState();
     if (MatchModal.currentId) MatchModal.open(MatchModal.currentId);
+  },
+
+  updateTriggerState() {
+    document.getElementById('admin-trigger').classList.toggle('is-admin', Admin.isLoggedIn());
   }
 };
