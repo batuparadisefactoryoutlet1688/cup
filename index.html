@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tournament Match Center</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="refresh-indicator" id="refresh-indicator">memperbarui…</div>
+
+  <header class="site-header">
+    <span class="trophy">🏆</span>
+    <h1 id="tournament-name">Tournament Match Center</h1>
+    <span class="status-pill" id="tournament-status">-</span>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="jadwal">Jadwal</button>
+    <button class="tab-btn" data-tab="hasil">Hasil</button>
+    <button class="tab-btn" data-tab="bracket">Bracket</button>
+    <button class="tab-btn" data-tab="teams">Teams</button>
+    <button class="tab-btn" data-tab="info">Info</button>
+  </nav>
+
+  <div class="container">
+    <div id="announcement-slot"></div>
+
+    <div id="app-root">
+      <section class="tab-panel" id="panel-jadwal"></section>
+      <section class="tab-panel hidden" id="panel-hasil"></section>
+      <section class="tab-panel hidden" id="panel-bracket"></section>
+      <section class="tab-panel hidden" id="panel-teams"></section>
+      <section class="tab-panel hidden" id="panel-info"></section>
+    </div>
+  </div>
+
+  <!-- Trigger admin tersembunyi: titik kecil pojok kanan bawah, tanpa label -->
+  <button class="admin-trigger" id="admin-trigger" aria-label="admin"></button>
+
+  <!-- Modal detail match (+ panel admin kalau sudah login) -->
+  <div class="modal-overlay hidden" id="match-modal">
+    <div class="modal-sheet">
+      <button class="modal-close" onclick="MatchModal.close()">✕</button>
+      <div id="match-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Modal login admin -->
+  <div class="modal-overlay hidden" id="login-modal">
+    <div class="modal-sheet" style="max-width:320px; margin:auto;">
+      <button class="modal-close" onclick="Admin.closeLogin()">✕</button>
+      <h3 style="font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold); margin-top:0;">Admin</h3>
+      <div class="field-row">
+        <input type="password" id="login-password" placeholder="Password" style="flex:1" onkeydown="if(event.key==='Enter')Admin.submitLogin()">
+      </div>
+      <button class="btn primary" style="width:100%" onclick="Admin.submitLogin()">Masuk</button>
+      <div class="admin-msg" id="login-msg"></div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/schedule.js"></script>
+  <script src="js/bracket.js"></script>
+  <script src="js/match.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
