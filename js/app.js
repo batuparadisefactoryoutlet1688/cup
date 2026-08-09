@@ -198,5 +198,19 @@ window.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
   Admin.initTrigger();
+  Admin.updateTriggerState();
+
+  // Tutup modal manapun lewat Esc atau klik area gelap di luar kartu.
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.add('hidden');
+    });
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay').forEach(o => o.classList.add('hidden'));
+    }
+  });
+
   boot().then(startAutoRefresh);
 });
