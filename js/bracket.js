@@ -5,6 +5,23 @@
 const Bracket = {
   activeCategory: null,
 
+  // Urutan babak per format, supaya bracket tidak bergantung urutan baris di sheet.
+  ROUND_ORDER: {
+    BOLA: ['PENYISIHAN', 'SEMI FINAL', 'FINAL'],
+    BADMINTON: ['16 BESAR', 'PEREMPAT FINAL', 'SEMI FINAL', 'FINAL']
+  },
+
+  sortRounds(rounds, sport) {
+    const order = Bracket.ROUND_ORDER[sport] || [];
+    return rounds.slice().sort((a, b) => {
+      const ia = order.indexOf(a), ib = order.indexOf(b);
+      if (ia === -1 && ib === -1) return 0;
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    });
+  },
+
   render() {
     const el = document.getElementById('panel-bracket');
     if (!Bracket.activeCategory) Bracket.activeCategory = DB.categories[0]?.category_id;
@@ -15,7 +32,8 @@ const Bracket = {
       </button>`).join('');
 
     const rows = DB.bracket.filter(b => b.category_id === Bracket.activeCategory);
-    const rounds = [...new Set(rows.map(r => r.round))];
+    const cat = DB.categories.find(c => c.category_id === Bracket.activeCategory);
+    const rounds = Bracket.sortRounds([...new Set(rows.map(r => r.round))], cat ? cat.sport : '');
 
     let cols = rounds.map(round => {
       const slots = rows.filter(r => r.round === round);
