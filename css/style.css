@@ -405,19 +405,20 @@ a { color: inherit; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 14px;
   margin: 20px 0;
+  flex-wrap: wrap;
 }
 .modal-score-row .team-name {
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 14px;
   text-align: center;
-  width: 120px;
+  width: 100px;
 }
 .modal-score-row .score-big {
   font-family: var(--font-mono);
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
 }
 
@@ -447,6 +448,7 @@ a { color: inherit; }
   padding: 0;
 }
 .admin-trigger:hover { background: rgba(244,180,26,0.3); }
+.admin-trigger.is-admin { background: rgba(244,180,26,0.45); }
 
 .admin-panel { margin-top: 16px; }
 .admin-panel h3 {
