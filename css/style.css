@@ -431,6 +431,33 @@ a { color: inherit; }
   font-weight: 700;
 }
 
+.modal-players-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+  margin: 18px 0;
+}
+.modal-players-col {
+  flex: 1;
+  text-align: center;
+}
+.modal-players-col .p-name {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: var(--chalk);
+  line-height: 1.7;
+}
+.modal-players-vs {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--chalk-dim);
+  align-self: center;
+  padding: 0 4px;
+}
+
 .info-line {
   display: flex;
   justify-content: space-between;
