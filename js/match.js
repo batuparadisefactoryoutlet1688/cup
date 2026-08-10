@@ -5,10 +5,34 @@
 const MatchModal = {
   currentId: null,
 
+  // Rakit detail match langsung dari DB yang sudah ada di browser (hasil ?action=all),
+  // tanpa request baru ke server -> modal buka instan.
+  buildDetailFromDB(matchId) {
+    const m = DB.matches.find(x => x.match_id === matchId);
+    if (!m) return null;
+    const match = Object.assign({}, m);
+    match.team_a = DB.teams.find(t => t.team_id === match.team_a_id) || null;
+    match.team_b = DB.teams.find(t => t.team_id === match.team_b_id) || null;
+    match.venue = DB.venues.find(v => v.venue_id === match.venue_id) || null;
+    const bracketEntry = DB.bracket.find(b => b.match_id === matchId) || null;
+    match.bracket_entry = bracketEntry;
+    const nextMatchId = bracketEntry ? bracketEntry.next_match_id : null;
+    match.next_match = nextMatchId ? (DB.matches.find(x => x.match_id === nextMatchId) || null) : null;
+    return match;
+  },
+
   async open(matchId) {
     MatchModal.currentId = matchId;
     const overlay = document.getElementById('match-modal');
     overlay.classList.remove('hidden');
+
+    const local = MatchModal.buildDetailFromDB(matchId);
+    if (local) {
+      MatchModal.render(local);
+      return;
+    }
+
+    // Fallback: kalau entah kenapa belum ada di DB lokal (jarang terjadi), baru ke server.
     document.getElementById('match-modal-body').innerHTML = '<div class="loading-strip">Memuat...</div>';
     try {
       const detail = await Api.getMatchDetail(matchId);
@@ -114,6 +138,7 @@ const MatchModal = {
       try {
         await Api.setStatus(m.match_id, status, Admin.getKey());
         msg('Status diperbarui.', true);
+        await refreshDB();
         await MatchModal.open(m.match_id);
         renderAll();
       } catch (err) { msg(err.message, false); }
@@ -125,6 +150,7 @@ const MatchModal = {
       try {
         await Api.setScore(m.match_id, a, b, Admin.getKey());
         msg('Skor diperbarui.', true);
+        await refreshDB();
         await MatchModal.open(m.match_id);
         renderAll();
       } catch (err) { msg(err.message, false); }
@@ -142,9 +168,8 @@ const MatchModal = {
       await Api.setWinner(m.match_id, winnerId, Admin.getKey());
       msgEl.textContent = 'Pemenang ditetapkan, bracket diperbarui.';
       msgEl.className = 'admin-msg ok';
+      await refreshDB();
       await MatchModal.open(m.match_id);
-      const data = await Api.getAll();
-      Object.assign(DB, data);
       renderAll();
     } catch (err) {
       msgEl.textContent = err.message;
