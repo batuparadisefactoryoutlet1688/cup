@@ -29,11 +29,23 @@ const MatchModal = {
     const teamBName = m.team_b ? m.team_b.team_name : 'TBD';
     const aWin = m.winner_id && m.winner_id === m.team_a_id;
     const bWin = m.winner_id && m.winner_id === m.team_b_id;
+    const playersA = (m.team_a && m.team_a.players) || [];
+    const playersB = (m.team_b && m.team_b.players) || [];
+    const showScore = m.status === 'LIVE' || m.status === 'FINISHED';
 
     let html = `
       <div class="m-round">${Utils.escapeHtml(m.round || '')} · ${Utils.escapeHtml(Utils.categoryLabel(m.category_id))}</div>
       <h2>${Utils.escapeHtml(teamAName)} <span style="color:var(--chalk-dim)">vs</span> ${Utils.escapeHtml(teamBName)}</h2>
 
+      ${(playersA.length || playersB.length) ? `
+        <div class="modal-players-row">
+          <div class="modal-players-col">${playersA.map(p => `<div class="p-name">${Utils.escapeHtml(p)}</div>`).join('')}</div>
+          <div class="modal-players-vs">VS</div>
+          <div class="modal-players-col">${playersB.map(p => `<div class="p-name">${Utils.escapeHtml(p)}</div>`).join('')}</div>
+        </div>
+      ` : ''}
+
+      ${showScore ? `
       <div class="modal-score-row">
         <div class="team-name ${aWin ? 'is-winner' : ''}" style="${aWin ? 'color:var(--gold)' : ''}">${Utils.escapeHtml(teamAName)}</div>
         <div class="score-big">${m.score_a ?? '-'}</div>
@@ -41,6 +53,7 @@ const MatchModal = {
         <div class="score-big">${m.score_b ?? '-'}</div>
         <div class="team-name ${bWin ? 'is-winner' : ''}" style="${bWin ? 'color:var(--gold)' : ''}">${Utils.escapeHtml(teamBName)}</div>
       </div>
+      ` : ''}
 
       <div class="info-line"><span>Status</span><span>${Utils.statusLabel(m.status)}</span></div>
       <div class="info-line"><span>Tanggal</span><span>${Utils.dateLabel(m.date).full} · ${Utils.timeOnly(m.start_time)}</span></div>
