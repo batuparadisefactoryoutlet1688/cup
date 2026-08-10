@@ -24,25 +24,40 @@ const Utils = {
   // Shim sementara: backend kadang mengirim date/time mentah (ISO+Z) kalau
   // normalizeMatch_ belum berjalan di Apps Script. Idealnya backend selalu
   // kirim date="yyyy-MM-dd" & time="HH:mm" polos.
+  // Terima 2 kemungkinan format dari backend: "yyyy-MM-dd" (ideal) atau
+  // "dd/MM/yyyy" (kalau backend baca lewat getDisplayValues() sesuai format sel
+  // Indonesia). Selalu dikembalikan sebagai "yyyy-MM-dd" supaya jadi key yang konsisten
+  // dipakai untuk grouping tanggal.
   dateOnly(raw) {
     if (!raw) return '';
-    if (String(raw).indexOf('T') !== -1) return String(raw).slice(0, 10);
-    return String(raw);
+    const s = String(raw).trim();
+    if (s.indexOf('T') !== -1) return s.slice(0, 10); // shim lama, jaga-jaga
+    const dmy = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (dmy) {
+      const dd = dmy[1].padStart(2, '0');
+      const mm = dmy[2].padStart(2, '0');
+      return dmy[3] + '-' + mm + '-' + dd;
+    }
+    return s; // asumsikan sudah yyyy-MM-dd
   },
 
   timeOnly(raw) {
     if (!raw) return '--:--';
-    if (String(raw).indexOf('T') !== -1) {
-      const d = new Date(raw);
+    const s = String(raw).trim();
+    if (s.indexOf('T') !== -1) {
+      const d = new Date(s);
       return d.getUTCHours().toString().padStart(2, '0') + ':' + d.getUTCMinutes().toString().padStart(2, '0');
     }
-    return String(raw);
+    return s; // sudah "HH:mm" apa adanya dari getDisplayValues()
   },
 
+  // SELALU return object {short, full} — tidak pernah return string polos,
+  // supaya pemanggil yang akses .short/.full tidak pernah dapat undefined.
   dateLabel(dateStr) {
     const clean = Utils.dateOnly(dateStr);
+    if (!clean) return { short: '-', full: '-' };
     const d = new Date(clean + 'T00:00:00');
-    if (isNaN(d)) return clean;
+    if (isNaN(d)) return { short: clean, full: clean };
     const hari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'][d.getDay()];
     const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][d.getMonth()];
     return { short: d.getDate() + ' ' + bulan, full: hari + ', ' + d.getDate() + ' ' + bulan };
