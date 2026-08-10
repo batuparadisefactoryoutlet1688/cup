@@ -116,6 +116,13 @@ async function boot() {
   }
 }
 
+// Dipakai setelah admin melakukan aksi tulis (setScore/setStatus/setWinner),
+// supaya DB lokal langsung sinkron sebelum modal dibuka ulang.
+async function refreshDB() {
+  const data = await Api.getAll();
+  Object.assign(DB, data);
+}
+
 function startAutoRefresh() {
   if (refreshTimer) clearInterval(refreshTimer);
   refreshTimer = setInterval(async () => {
@@ -182,6 +189,7 @@ function renderTeams() {
             <div class="team-item">
               <div class="t-no">#${Utils.escapeHtml(t.team_no)}</div>
               ${Utils.escapeHtml(t.team_name)}
+              ${(t.players && t.players.length) ? `<div class="t-players">${t.players.map(p => Utils.escapeHtml(p)).join(', ')}</div>` : ''}
             </div>
           `).join('')}
         </div>
