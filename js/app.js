@@ -110,7 +110,8 @@ async function boot() {
     renderAll();
   } catch (err) {
     document.getElementById('app-root').innerHTML =
-      '<div class="empty-state">Gagal memuat data.<br>' + Utils.escapeHtml(err.message) + '</div>';
+      '<div class="empty-state">Gagal memuat data.<br>' + Utils.escapeHtml(err.message) +
+      '<br><button class="btn primary" style="margin-top:12px" onclick="boot()">Coba Lagi</button></div>';
   } finally {
     hideRefreshIndicator();
   }
