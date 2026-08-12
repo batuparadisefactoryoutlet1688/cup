@@ -107,7 +107,7 @@ const Schedule = {
             : `<div class="vs-sep">${Utils.timeOnly(m.start_time)}</div>`}
           <div class="team ${bWin ? 'is-winner' : ''}" style="text-align:right">${Utils.escapeHtml(teamB)}</div>
         </div>
-        <div class="venue-row">📍 ${Utils.escapeHtml(Utils.venueLabel(m.venue_id))}</div>
+        <div class="venue-row">📍 ${Utils.escapeHtml(Utils.venueLabel(m.venue_id))}${m.referee ? ` · 🧑‍⚖️ ${Utils.escapeHtml(m.referee)}` : ''}</div>
       </div>`;
   }
 };
