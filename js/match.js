@@ -82,6 +82,7 @@ const MatchModal = {
       <div class="info-line"><span>Status</span><span>${Utils.statusLabel(m.status)}</span></div>
       <div class="info-line"><span>Tanggal</span><span>${Utils.dateLabel(m.date).full} · ${Utils.timeOnly(m.start_time)}</span></div>
       <div class="info-line"><span>Venue</span><span>${Utils.escapeHtml(Utils.venueLabel(m.venue_id))}</span></div>
+      ${m.referee ? `<div class="info-line"><span>Wasit</span><span>${Utils.escapeHtml(m.referee)}</span></div>` : ''}
       ${m.winner_id ? `<div class="info-line"><span>Pemenang</span><span>${Utils.escapeHtml(m.winner_id === m.team_a_id ? teamAName : teamBName)}</span></div>` : ''}
       ${m.next_match ? `<div class="info-line"><span>Next</span><span>${Utils.escapeHtml(m.next_match.round)}</span></div>` : ''}
     `;
